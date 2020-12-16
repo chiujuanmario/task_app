@@ -1,8 +1,8 @@
 import { MODULE_NAME as tasksModuleName } from './tasks/selectors';
 import { reducer as tasksReducer } from './tasks/reducer';
 
-import { MODULE_NAME as greateTaskModuleName } from './greateTask/selectors';
-import { reducer as greateTaskReducer } from './greateTask/reducer';
+import { MODULE_NAME as createTaskModuleName } from './createTask/selectors';
+import { reducer as createTaskReducer } from './createTask/reducer';
 
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 
@@ -23,7 +23,7 @@ const persistTasks = {
 
 const rootReducer = combineReducers({
     [tasksModuleName]: persistReducer(persistTasks, tasksReducer),
-    [greateTaskModuleName]: greateTaskReducer
+    [createTaskModuleName]: createTaskReducer
 });
 
 export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));

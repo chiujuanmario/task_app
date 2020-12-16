@@ -1,4 +1,4 @@
-import { ADD_TASK, REMOVE_TASK, EDIT_TASK } from "./types";
+import { GET_ALL_TASK, ADD_TASK, REMOVE_TASK, EDIT_TASK } from "./types";
 
 const InitialState = {
   tasks: []
@@ -6,6 +6,12 @@ const InitialState = {
 
 export function reducer(state = InitialState, { type, payload }) {
   switch (type) {
+
+    case GET_ALL_TASK:
+      return {
+        ...state,
+        tasks: payload,
+      };
 
     case ADD_TASK:
       return {

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TaskList } from './components/TaskList';
-import { GreateTask } from './components/GreateTask';
+import { CreateTask } from './components/CreateTask';
 
 // Material-UI
 import { Button, Tooltip, Typography } from '@material-ui/core';
@@ -10,15 +10,16 @@ import { makeStyles } from '@material-ui/core/styles';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { openTask } from './store/greateTask/actions';
-import { selectTaskIsOpen } from './store/greateTask/selectors';
+import { openTask } from './store/createTask/actions';
+import { getAllTask } from './store/tasks/actions';
+import { selectTaskIsOpen } from './store/createTask/selectors';
 import { selectTasks } from './store/tasks/selectors';
 
 const useStyles = makeStyles({
   taskConteiner: {
     marginTop: "50px",
     maxWidth: "400px",
-    border: "1px solid grey",
+    backgroundColor: "white",
     borderRadius: "5px",
     padding: "0"
   },
@@ -26,8 +27,6 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "space-between",
     padding: "15px",
-    backgroundColor: "#f2f2f2",
-    border: "1px solid transparent",
     borderTopLeftRadius: "5px",
     borderTopRightRadius: "5px"
   }
@@ -38,6 +37,10 @@ function App() {
   const dispatch = useDispatch();
   const isOpenTask = useSelector(selectTaskIsOpen);
   const tasksList = useSelector(selectTasks);
+
+  useEffect(() => {
+    dispatch(getAllTask());
+  }, [dispatch]);
 
   const newTaskHeandler = () => {
     dispatch(openTask())
@@ -55,7 +58,7 @@ function App() {
           </Button>
         </Tooltip>
       </Typography>
-      {isOpenTask && <GreateTask />}
+      {isOpenTask && <CreateTask />}
       <TaskList />
     </Container>
   );

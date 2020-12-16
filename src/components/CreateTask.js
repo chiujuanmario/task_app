@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { timeToSeconds, seconsToTime } from '../helpers';
 
 // Material-UI
 import {
@@ -17,12 +19,8 @@ import { makeStyles } from '@material-ui/core/styles';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { addTask, editTask, removeTask } from '../store/tasks/actions';
-import { closeTask } from '../store/greateTask/actions';
-import { selectTaskContent } from '../store/greateTask/selectors';
-
-
-// Uniqid
-const uniqid = require('uniqid');
+import { closeTask } from '../store/createTask/actions';
+import { selectTaskContent } from '../store/createTask/selectors';
 
 const useStyles = makeStyles({
   taskCard: {
@@ -33,15 +31,26 @@ const useStyles = makeStyles({
   }
 });
 
-export const GreateTask = () => {
+export const CreateTask = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const taskContent = useSelector(selectTaskContent)
+  const taskContent = useSelector(selectTaskContent);
 
-  const [taskValue, setTaskValue] = useState(taskContent ? taskContent.taskDescription : "");
-  const [dateValue, setDateValue] = useState(taskContent ? taskContent.date : "2020-12-15");
-  const [timeValue, setTimeValue] = useState(taskContent ? taskContent.time : "07:30");
-  const [userValue, setUserValue] = useState(taskContent ? taskContent.assignUser : "");
+  const [taskValue, setTaskValue] = useState(taskContent?.task_msg || '');
+  const [dateValue, setDateValue] = useState(taskContent?.task_date || '');
+  const [timeValue, setTimeValue] = useState(taskContent?.task_time ? seconsToTime(taskContent?.task_time) : '');
+
+  useEffect(() => {
+    if (taskContent) {
+      setTaskValue(taskContent.task_msg);
+      setDateValue(taskContent.task_date);
+      setTimeValue(seconsToTime(taskContent.task_time));
+    } else {
+      setTaskValue('');
+      setDateValue('');
+      setTimeValue('');
+    }
+  }, [taskContent]);
 
   const cancelTaskHeandler = () => {
     dispatch(closeTask())
@@ -50,19 +59,16 @@ export const GreateTask = () => {
   const saveTaskHeandler = () => {
     if (!taskContent) {
       dispatch(addTask({
-        id: uniqid(),
-        taskDescription: taskValue,
-        date: dateValue,
-        time: timeValue,
-        assignUser: userValue
+        task_msg: taskValue,
+        task_date: dateValue,
+        task_time: timeToSeconds(timeValue),
       }))
     } else {
       dispatch(editTask({
         id: taskContent.id,
-        taskDescription: taskValue,
-        date: dateValue,
-        time: timeValue,
-        assignUser: userValue
+        task_msg: taskValue,
+        task_date: dateValue,
+        task_time: timeToSeconds(timeValue),
       }
       ))
     }
@@ -74,6 +80,10 @@ export const GreateTask = () => {
     dispatch(closeTask());
   }
 
+  const onTimeChange = (event) => {
+    setTimeValue(event.target.value);
+  };
+
   return (
     <Card>
       <CardContent>
@@ -82,7 +92,7 @@ export const GreateTask = () => {
             <TextField
               label="Task Description"
               variant="outlined"
-              defaultValue={taskValue}
+              value={taskValue}
               onChange={(event) => setTaskValue(event.target.value)}
               className={classes.taskDescription}
             />
@@ -92,7 +102,7 @@ export const GreateTask = () => {
               id="date"
               label="Date"
               type="date"
-              defaultValue={dateValue}
+              value={dateValue}
               onChange={(event) => setDateValue(event.target.value)}
               InputLabelProps={{
                 shrink: true,
@@ -102,23 +112,14 @@ export const GreateTask = () => {
               id="time"
               label="Time"
               type="time"
-              defaultValue={timeValue}
-              onChange={(event) => setTimeValue(event.target.value)}
+              value={timeValue}
+              onChange={onTimeChange}
               InputLabelProps={{
                 shrink: true,
               }}
               inputProps={{
                 step: 300,
               }}
-            />
-          </ListItem>
-          <ListItem>
-            <TextField
-              label="Assign user"
-              variant="outlined"
-              defaultValue={userValue}
-              onChange={(event) => setUserValue(event.target.value)}
-              className={classes.taskDescription}
             />
           </ListItem>
         </List>

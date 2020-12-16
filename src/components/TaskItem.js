@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 // Redux
 import { useDispatch } from 'react-redux';
-import { openTask } from '../store/greateTask/actions';
+import { openTask } from '../store/createTask/actions';
 
 const useStyles = makeStyles({
   taskItem: {
@@ -27,8 +27,8 @@ export const TaskItem = ({ item }) => {
 
   return (
     <ListItem className={classes.taskItem}>
-      <Typography variant="subtitle2">{item.taskDescription}</Typography>
-      <Typography variant="overline">{item.date}</Typography>
+      <Typography variant="subtitle2">{item.task_msg}</Typography>
+      <Typography variant="overline">{item.task_date}</Typography>
       <Tooltip title="Edit task" placement="top">
         <IconButton onClick={editHeandler}>
           <CreateIcon />

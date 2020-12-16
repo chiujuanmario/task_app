@@ -6,12 +6,11 @@ import { useSelector } from 'react-redux';
 import { selectTasks } from '../store/tasks/selectors';
 
 // Material-UI
-import List from '@material-ui/core/List';
+import { List, Paper,  } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   tasksList: {
-    backgroundColor: "#edf5fa",
     border: "1px solid transparent",
     borderBottomLeftRadius: "5px",
     borderBottomRightRadius: "5px"
@@ -23,8 +22,10 @@ export const TaskList = () => {
   const tasksList = useSelector(selectTasks);
 
   return (
-    <List className={classes.tasksList}>
-      {tasksList.length > 0 && tasksList.map(item => <TaskItem item={item} />)}
-    </List>
+    <Paper>
+      <List className={classes.tasksList}>
+        {tasksList.length > 0 && tasksList.map(item => <TaskItem key={item.id} item={item} />)}
+      </List>
+    </Paper>
   )
 }
